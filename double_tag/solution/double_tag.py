@@ -43,6 +43,8 @@ def main():
     except RuntimeError:
         # broadcast MAC, will work in this lab because there is only 1 host in VLAN 20
         # otherwise everyone would be flooded
+        # this is actually the intended behaviour because there is no routing between VLANs, and get_mac()
+        # never reaches beyond the caller's VLAN (stays trapped in attacker's VLAN1)
         target_mac = "ff:ff:ff:ff:ff:ff"
         print(f"[INFO] Could not resolve target MAC, using broadcast: {target_mac}")
 
