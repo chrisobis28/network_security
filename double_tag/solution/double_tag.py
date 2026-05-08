@@ -26,7 +26,7 @@ def get_mac(ip: str) -> str:
 
 def main():
     if len(sys.argv) != 4:
-        print(f"Usage: {sys.argv[0]} <attacker_vlan> <target_vlan> <target_ip>")
+        print(f"Usage: double_tag.py <attacker_vlan> <target_vlan> <target_ip>")
         sys.exit(1)
 
     attacker_vlan = int(sys.argv[1])
