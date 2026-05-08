@@ -1,0 +1,46 @@
+services:
+  attacker:
+    container_name: assignment_2_vlan_attacker
+    hostname: attacker
+    build:
+      context: .
+      dockerfile: attacker.Dockerfile
+    command: tail -F anything
+    networks:
+      lab_net1:
+        ipv4_address: 192.168.120.100
+    working_dir: /solution
+    volumes:
+      - type: bind
+        source: ./solution
+        target: /solution
+  host2:
+    container_name: assignment_2_vlan_host2
+    hostname: host2
+    build:
+      context: .
+      dockerfile: host.Dockerfile
+    command: tail -F anything
+    networks:
+      lab_net2:
+        ipv4_address: 192.168.130.100
+
+networks:
+  lab_net1:
+    driver: ipvlan
+    ipam:
+      config:
+        - subnet: 192.168.120.0/24
+    driver_opts:
+      ipvlan_mode: l2
+      ipvlan_flag: bridge
+      parent: vlan_veth0
+  lab_net2:
+    driver: ipvlan
+    ipam:
+      config:
+        - subnet: 192.168.130.0/24
+    driver_opts:
+      ipvlan_mode: l2
+      ipvlan_flag: bridge
+      parent: vlan_veth1

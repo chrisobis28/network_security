@@ -1,0 +1,45 @@
+services:
+  host1:
+    container_name: assignment_2_host1
+    hostname: host1
+    build:
+      context: .
+      dockerfile: host.Dockerfile
+    command: nping --icmp --dest-ip 192.168.124.20 --count 0 --data-string "Hello"
+    networks:
+      lab_net:
+        ipv4_address: 192.168.124.10
+  host2:
+    container_name: assignment_2_host2
+    hostname: host2
+    build:
+      context: .
+      dockerfile: host.Dockerfile
+    command: nping --icmp --dest-ip 192.168.124.10 --count 0 --data-string "Hi!"
+    networks:
+      lab_net:
+        ipv4_address: 192.168.124.20
+  attacker:
+    container_name: assignment_2_attacker
+    hostname: attacker
+    build:
+      context: .
+      dockerfile: attacker.Dockerfile
+    command: tail -F anything
+    networks:
+      lab_net:
+        ipv4_address: 192.168.124.30
+    working_dir: /solution
+    volumes:
+      - type: bind
+        source: ./solution
+        target: /solution
+
+networks:
+  lab_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.124.0/24
+    driver_opts:
+      com.docker.network.bridge.name: network_security_2
