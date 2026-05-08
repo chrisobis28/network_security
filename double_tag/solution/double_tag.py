@@ -1,5 +1,3 @@
-from scapy.all import *
-
 """
 VLAN Hopping - when an attacker escapes their assigned VLAN and sends traffic into another VLAN
 1. Switch spoofing - attacker tricks a switch port into becoming a trunk port;
@@ -50,7 +48,7 @@ def main():
 
     # we stack the layers using "/"
     # ICMP - payload, an echo request (type=8), sequence 0
-    # IP - wraps ICMP, contains source IP (attacker) and destination IP (victim)
+    # IP - wraps ICMP, contains source IP (attacker - hardcoded/defined in docker-compose.yml) and destination IP (victim)
     # Dot1Q(vlan=target_vlan) the inner vlan (20), survives the first switch
     # Dot1Q(vlan=attacker_vlan) the outer native vlan (1), tells the first switch this is normal traffic
     # Ether L2 (Data link layer) frame wrapper, source is the attacker's MAC, destination is the victim's MAC
