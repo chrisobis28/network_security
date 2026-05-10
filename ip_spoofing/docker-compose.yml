@@ -1,0 +1,46 @@
+services:
+  client:
+    container_name: assignment_3_spoofing_client
+    hostname: client
+    build:
+      context: .
+      dockerfile: client.Dockerfile
+    command: tail -F anything
+    networks:
+      lab_net:
+        ipv4_address: 192.168.124.10
+  server:
+    container_name: assignment_3_spoofing_server
+    hostname: server
+    build:
+      context: ./server
+    command: /entrypoint.sh
+    cap_add:
+      - NET_ADMIN
+    networks:
+      lab_net:
+        ipv4_address: 192.168.124.20
+  attacker:
+    container_name: assignment_3_spoofing_attacker
+    hostname: attacker
+    build:
+      context: .
+      dockerfile: attacker.Dockerfile
+    command: tail -F anything
+    networks:
+      lab_net:
+        ipv4_address: 192.168.124.30
+    working_dir: /solution
+    volumes:
+      - type: bind
+        source: ./solution
+        target: /solution
+
+networks:
+  lab_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.124.0/24
+    driver_opts:
+      com.docker.network.bridge.name: assignment_3
