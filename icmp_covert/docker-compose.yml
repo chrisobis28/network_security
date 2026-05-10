@@ -1,0 +1,65 @@
+services:
+  attacker:
+    container_name: assignment_3_covert_attacker
+    hostname: attacker
+    build:
+      context: .
+      dockerfile: host.Dockerfile
+    command: sh -c "ip route replace default via 192.168.124.2 && tail -F anything"
+    cap_add:
+      - NET_ADMIN
+    networks:
+      lab_net_1:
+        ipv4_address: 192.168.124.10
+    working_dir: /solution
+    volumes:
+      - type: bind
+        source: ./solution
+        target: /solution
+  victim:
+    container_name: assignment_3_covert_victim
+    hostname: victim
+    build:
+      context: .
+      dockerfile: host.Dockerfile
+    command: sh -c "ip route replace default via 192.168.124.18 && tail -F anything"
+    cap_add:
+      - NET_ADMIN
+    networks:
+      lab_net_2:
+        ipv4_address: 192.168.124.20
+    working_dir: /solution
+    volumes:
+      - type: bind
+        source: ./solution
+        target: /solution
+  firewall:
+    container_name: assignment_3_covert_firewall
+    hostname: firewall
+    build:
+      context: ./firewall
+    command: /entrypoint.sh
+    cap_add:
+      - NET_ADMIN
+    networks:
+      lab_net_1:
+        ipv4_address: 192.168.124.2
+      lab_net_2:
+        ipv4_address: 192.168.124.18
+
+
+networks:
+  lab_net_1:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.124.0/28
+    driver_opts:
+      com.docker.network.bridge.name: assignment_3_1
+  lab_net_2:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.124.16/28
+    driver_opts:
+      com.docker.network.bridge.name: assignment_3_2

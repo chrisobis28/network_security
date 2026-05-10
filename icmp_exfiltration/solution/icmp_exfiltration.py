@@ -30,7 +30,7 @@ def receive_mode(key_hex: str, output_filename: str):
         sys.exit(0)
 
     # sniff for ICMP Type 13 packets
-    sniff(filter="icmp[0]=13", prn=packet_callback, store=False)
+    sniff(filter="icmp", prn=packet_callback, store=False, stop_filter=)
 
 def send_mode(key_hex: str, filename: str, receiver_ip: str):
     key = bytes.fromhex(key_hex)
